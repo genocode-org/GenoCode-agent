@@ -1,6 +1,6 @@
 {
   "name": "@genocode/agent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Design GenoCode creatures with Claude: an MCP server with tools to check, draw and save creatures, the genocode-creatures skill, and an agent for the Claude API.",
   "keywords": [
     "genocode",
