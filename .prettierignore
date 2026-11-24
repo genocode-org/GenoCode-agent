@@ -1,3 +1,6 @@
 dist
 node_modules
 package-lock.json
+
+# The genocode-creatures skill keeps its own layout, and its docs are copies of GenoCode's.
+.claude/skills/genocode-creatures

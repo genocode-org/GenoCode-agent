@@ -75,7 +75,7 @@ describe("designCreature", () => {
     expect(params.messages).toEqual([{ role: "user", content: "a blob" }]);
     const system = params.system.map((b) => b.text).join("\n");
     expect(system).toContain("# The GenoCode language");
-    expect(system).toContain('<example file="Flower.genie">');
+    expect(system).toContain('<example file="Oak.genie">');
   });
 
   it("returns the creature it saved, and reports its progress", async () => {

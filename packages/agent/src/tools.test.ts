@@ -10,7 +10,7 @@ import {
   renderPng,
 } from "./tools.js";
 
-const GOOD = "creature T\ngene n = 2 in 1..4 step 1  // how many\nrepeat n {\n  lay\n}\n";
+const GOOD = "creature T\ngene n = 2 in 1..4 step 1 // how many\nrepeat n {\n  lay\n}\n";
 // Two balls that move apart as time goes by.
 const LIVE = "creature L\nlay\nmove (1 + 3 * time, 0, 0)\nlay\n";
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -72,10 +72,10 @@ describe("renderPng", () => {
 
 describe("list_genes", () => {
   it("lists genes with their ranges and descriptions", () => {
-    expect(listGenes(GOOD)).toBe("n = 2 in 1..4 step 1  // how many");
+    expect(listGenes(GOOD)).toBe("n = 2 in 1..4 step 1 // how many");
     expect(listGenes("creature T\nlay\n")).toBe("The creature has no genes.");
     expect(listGenes("creature B\nforward red\n")).toContain("1 error");
-    expect(describeGenes(check(GOOD).genes)).toEqual(["n = 2 in 1..4 step 1  // how many"]);
+    expect(describeGenes(check(GOOD).genes)).toEqual(["n = 2 in 1..4 step 1 // how many"]);
   });
 });
 
