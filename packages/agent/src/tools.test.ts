@@ -2,6 +2,7 @@ import { check } from "@genocode/core";
 import { describe, expect, it } from "vitest";
 import {
   checkCreature,
+  checkFamily,
   describeGenes,
   finishCreature,
   listGenes,
@@ -13,6 +14,12 @@ import {
 const GOOD = "creature T\ngene n = 2 in 1..4 step 1 // how many\nrepeat n {\n  lay\n}\n";
 // Two balls that move apart as time goes by.
 const LIVE = "creature L\nlay\nmove (1 + 3 * time, 0, 0)\nlay\n";
+// A ball whose colour is a gene, with a variant that makes it orange.
+const FAMILY =
+  "creature F\ngene skin = hsv(0, 1, 1) in hsv(0, 0.5, 0.5)..hsv(40, 1, 1) // its colour\ncolour skin\nlay\n\nvariant Orange {\n  skin = hsv(30, 1, 1)\n}\n";
+// The variant has more balls, so they pop in while it morphs.
+const POPPING =
+  "creature P\ngene n = 1 in 1..4 step 1 // how many\nrepeat n {\n  lay\n  forward 1\n}\n\nvariant Many {\n  n = 4\n}\n";
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 describe("check_creature", () => {
@@ -59,6 +66,51 @@ describe("render_creature", () => {
     expect(renderCreature("creature B\nforward red\n", [0])).toEqual([
       { kind: "text", text: expect.stringContaining("can't be drawn") },
     ]);
+  });
+});
+
+describe("render_creature, with a variant or several views", () => {
+  const png = (out: ReturnType<typeof renderCreature>) =>
+    out.flatMap((o) => (o.kind === "png" ? [o.data] : []));
+  const width = (data: Uint8Array) => new DataView(data.buffer, data.byteOffset).getUint32(16);
+
+  it("draws a variant instead of the creature's own genes", () => {
+    const own = renderCreature(FAMILY, [0], 32);
+    const big = renderCreature(FAMILY, [0], 32, { variant: "Orange" });
+    expect(big[0]).toEqual({ kind: "text", text: "Orange, time = 0: 1 shape" });
+    expect(png(big)[0]).not.toEqual(png(own)[0]);
+  });
+
+  it("draws several views side by side", () => {
+    const out = renderCreature(FAMILY, [0], 32, { views: ["front", "right"] });
+    expect(out[0]).toEqual({ kind: "text", text: "time = 0: 1 shape, seen from front, right" });
+    expect(width(png(out)[0]!)).toBeGreaterThan(64);
+  });
+
+  it("says when a variant or a view doesn't exist", () => {
+    expect(renderCreature(FAMILY, [0], 32, { variant: "Huge" })).toEqual([
+      { kind: "text", text: "There's no variant called Huge. Its variants are: Orange." },
+    ]);
+    expect(renderCreature(GOOD, [0], 32, { variant: "Huge" })[0]).toEqual({
+      kind: "text",
+      text: expect.stringContaining("has no variants"),
+    });
+    expect(renderCreature(FAMILY, [0], 32, { views: ["under"] })[0]).toEqual({
+      kind: "text",
+      text: expect.stringContaining("under isn't a view"),
+    });
+  });
+});
+
+describe("check_family", () => {
+  it("passes a family that morphs smoothly", async () => {
+    const report = await checkFamily(FAMILY);
+    expect(report).toContain("1. check");
+    expect(report).toContain("PASSED");
+  });
+
+  it("fails a family where parts pop in while it morphs", async () => {
+    expect(await checkFamily(POPPING)).toMatch(/FAIL/);
   });
 });
 

@@ -9,11 +9,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
   checkCreature,
+  checkFamily,
   finishCreature,
   listGenes,
   MAX_RENDER_TIMES,
+  MAX_VIEWS,
   renderCreature,
   type ToolOutput,
+  VIEWS,
 } from "./tools.js";
 
 export interface ServerOptions {
@@ -53,9 +56,19 @@ export function createServer(options: ServerOptions): McpServer {
     {
       description:
         "Draw a creature as the viewer sees it, at one or more moments, and return the pictures. " +
-        "Time 0 is the rest pose; creatures that read `time` move between moments.",
+        "Time 0 is the rest pose; creatures that read `time` move between moments. It can " +
+        "also draw a variant, and the creature from several sides.",
       inputSchema: {
         source,
+        variant: z
+          .string()
+          .optional()
+          .describe("A variant's name, to draw it instead of the creature's own genes."),
+        views: z
+          .array(z.enum(Object.keys(VIEWS) as [string, ...string[]]))
+          .max(MAX_VIEWS)
+          .optional()
+          .describe("Where to see it from, drawn side by side in each picture. Default: front."),
         times: z
           .array(z.number().min(0))
           .max(MAX_RENDER_TIMES)
@@ -63,7 +76,9 @@ export function createServer(options: ServerOptions): McpServer {
           .describe(`Values of \`time\` in seconds, at most ${MAX_RENDER_TIMES}. Default [0].`),
       },
     },
-    ({ source, times }) => ({ content: toMcpContent(renderCreature(source, times ?? [])) }),
+    ({ source, times, variant, views }) => ({
+      content: toMcpContent(renderCreature(source, times ?? [], undefined, { variant, views })),
+    }),
   );
 
   server.registerTool(
@@ -73,6 +88,19 @@ export function createServer(options: ServerOptions): McpServer {
       inputSchema: { source },
     },
     ({ source }) => text(listGenes(source)),
+  );
+
+  server.registerTool(
+    "check_family",
+    {
+      description:
+        "Check that a creature and its variants morph into each other smoothly (nothing pops " +
+        "in or out, jumps or changes colour suddenly), are about the same size, breed and dance " +
+        "well. Use it on every creature with variants. Returns a report of what passed and " +
+        "what failed.",
+      inputSchema: { source },
+    },
+    async ({ source }) => text(await checkFamily(source)),
   );
 
   server.registerTool(

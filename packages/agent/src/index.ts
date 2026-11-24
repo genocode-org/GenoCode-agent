@@ -11,14 +11,18 @@ export {
 } from "./agent.js";
 export {
   checkCreature,
+  checkFamily,
   describeDiagnostics,
   describeGenes,
   finishCreature,
   listGenes,
   MAX_RENDER_TIMES,
+  MAX_VIEWS,
   renderCreature,
   renderPng,
+  VIEWS,
   type Finished,
+  type Look,
   type RenderOptions,
   type ToolOutput,
 } from "./tools.js";

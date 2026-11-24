@@ -38,6 +38,7 @@ describe("MCP server", () => {
       "check_creature",
       "render_creature",
       "list_genes",
+      "check_family",
       "save_creature",
     ]);
   });

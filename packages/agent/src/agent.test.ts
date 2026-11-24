@@ -70,6 +70,7 @@ describe("designCreature", () => {
       "check_creature",
       "render_creature",
       "list_genes",
+      "check_family",
       "save_creature",
     ]);
     expect(params.messages).toEqual([{ role: "user", content: "a blob" }]);
