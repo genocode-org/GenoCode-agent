@@ -58,7 +58,7 @@ function fakeClient(
 const BLOB = "creature Blob\nlay\n";
 
 describe("designCreature", () => {
-  it("asks Claude with the language, the examples, the tools and a fallback", async () => {
+  it("asks Claude with the skill, the tools and a fallback", async () => {
     const fake = fakeClient([], { text: "Done.", stop_reason: "end_turn" });
     await designCreature({ description: "a blob", client: fake.client });
     const params = fake.params();
@@ -74,8 +74,10 @@ describe("designCreature", () => {
     ]);
     expect(params.messages).toEqual([{ role: "user", content: "a blob" }]);
     const system = params.system.map((b) => b.text).join("\n");
-    expect(system).toContain("# The GenoCode language");
-    expect(system).toContain('<example file="Oak.genie">');
+    expect(system).toContain("There are only three rules.");
+    expect(system).toContain('<file path="docs/LANGUAGE.md">\n# The GenoCode language');
+    expect(system).toContain('<file path="examples/Oak.genie">\ncreature Oak');
+    expect(system).toContain('<file path="templates/Starter.genie">');
   });
 
   it("returns the creature it saved, and reports its progress", async () => {
