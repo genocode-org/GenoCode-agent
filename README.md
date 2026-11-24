@@ -12,10 +12,11 @@ picked up again, it will be published as `@genocode/agent` and `genie create` wi
 ## How it works
 
 Given a description, the agent writes a `.genie` creature, checks it, draws it at a few moments to
-see how it looks and moves, fixes what's wrong and saves it. Its system prompt is the GenoCode
-language definition and the starter creatures, which it reads from
-[`@genocode/core`](https://www.npmjs.com/package/@genocode/core), so it always teaches the
-version of the language that it checks against. It uses Claude Opus 5.5 by default.
+see how it looks and moves, fixes what's wrong and saves it. Its system prompt is the
+[`genocode-creatures` skill](.claude/skills/genocode-creatures/SKILL.md): the rules for making
+creatures, the language docs and the sample creatures. If the description doesn't say how many
+variants the creature should have, the agent asks instead of saving one. It uses Claude Opus 5.5 by
+default.
 
 ## Using it with a Claude plan, without an API key
 
