@@ -11,29 +11,49 @@ watch it move, morph, breed and dance.
 
 With Claude Code or Claude Desktop, your Claude plan covers the work, so no API key is needed.
 
-## Claude Code
+## Install in Claude Code
 
-Add the GenoCode plugin, in Claude Code:
+You need [Claude Code](https://claude.com/claude-code) and [Node.js](https://nodejs.org) 22 or
+later. Check your Node.js version with `node --version`.
 
-```
-/plugin marketplace add genocode-org/GenoCode-agent
-/plugin install genocode@genocode
-```
+1. Start Claude Code, in any folder: run `claude`.
+2. Add the GenoCode plugin list, then install the plugin from it:
 
-Then, in any folder, ask Claude to design a creature, for example "design a red ball with two
-wobbling antennae". It saves the creature in that folder. You need
-[Node.js](https://nodejs.org) 22 or later.
+   ```
+   /plugin marketplace add genocode-org/GenoCode-agent
+   /plugin install genocode@genocode
+   ```
 
-## Claude Desktop
+3. Restart Claude Code. Type `/mcp` to check: `genocode` should be in the list of servers.
+4. Ask for a creature, for example "design a red ball with two wobbling antennae". Claude may ask
+   you a question first, such as how many variants you want. It saves the creature as a `.genie`
+   file in the folder you started Claude Code in.
 
-1. Download `genocode.mcpb` from the
-   [latest release](https://github.com/genocode-org/GenoCode-agent/releases/latest) and open it.
-   Claude Desktop asks you to install the GenoCode extension, and which folder to save creatures
-   in.
-2. Download `genocode-creatures.zip` from the same release, and upload it in Claude Desktop's
-   settings, under skills. The skill teaches Claude the language and the rules for making
-   creatures.
-3. Ask Claude to design a creature.
+To get a newer version later, run `/plugin marketplace update genocode`, then restart Claude Code.
+
+## Install in Claude Desktop
+
+You need [Claude Desktop](https://claude.com/download) for Windows or Mac. It comes with what the
+extension needs, so you don't have to install Node.js.
+
+1. Download `genocode.mcpb` and `genocode-creatures.zip` from the
+   [latest release](https://github.com/genocode-org/GenoCode-agent/releases/latest).
+2. Open `genocode.mcpb` (double-click it, or drag it into Claude Desktop). Claude Desktop shows the
+   GenoCode extension: click **Install**. It asks which folder to save creatures in. If you leave
+   it, they go into a `GenoCode` folder in your Documents.
+3. Add the skill, which teaches Claude the language and the rules for making creatures: in Claude
+   Desktop's settings, find **Skills** (under Capabilities), choose to upload a skill, and pick
+   `genocode-creatures.zip`. Leave the zip as it is; don't unzip it.
+4. Start a new chat and ask for a creature.
+
+To get a newer version later, download both files from the latest release again and install them
+the same way.
+
+## Open your creature
+
+Go to the [GenoCode app](https://genocode.piorek.co.za/app/), choose **File**, then **Open a
+.genie file…**, and pick the creature. You can also drag the file onto the app. You can then watch
+it move, change its genes, breed it and make it dance.
 
 ## Other ways
 
@@ -71,8 +91,9 @@ on.
 
 To release, put the new version in `packages/agent/package.json`,
 `plugin/.claude-plugin/plugin.json` (twice: `version`, and the server's `@genocode/agent@…`) and
-`desktop/manifest.json`, then push a tag such as `v0.2.0`. The release workflow publishes the
-package to npm, where it waits for approval, and makes a GitHub release with `genocode.mcpb` and
+`desktop/manifest.json` in a pull request. Once it's merged, push a tag such as `v0.2.0` on `main`.
+The release workflow stages the package on npm, where it waits until you approve it on
+npmjs.com, and makes a GitHub release with `genocode.mcpb` and
 `genocode-creatures.zip`. `node scripts/release-files.mjs` builds those two files locally, after
 `npm run build`.
 
