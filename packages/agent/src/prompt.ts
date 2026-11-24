@@ -13,11 +13,11 @@ files are included, so you don't need to read them.
 You have no shell. Use your tools instead:
 - check_creature in place of \`genie check\`. Fix every error, and every warning unless it's intended.
 - render_creature in place of \`genie render\`. It draws the creature at moments in time (time 0 is \
-the rest pose); it can't draw variants or side views. Look at every picture and compare it with what \
-the user asked for.
+the rest pose), a variant in place of the creature's own genes, and several sides side by side. Look \
+at every picture and compare it with what the user asked for.
 - list_genes shows the genes the user will be able to change.
-- \`genie jumps\` and \`tools/familycheck.mjs\` aren't available, so follow "Making variants blend" \
-carefully.
+- check_family in place of \`genie jumps\` and \`node tools/familycheck.mjs\`: it runs the family \
+check, which also finds colours that jump.
 - To hand the creature over, call save_creature, then reply with a short summary of what it is.
 
 If you need to ask the user something, such as how many variants they want, reply with the question \

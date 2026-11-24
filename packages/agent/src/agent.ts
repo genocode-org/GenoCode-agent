@@ -7,12 +7,15 @@ import { z } from "zod";
 import { systemPrompt } from "./prompt.js";
 import {
   checkCreature,
+  checkFamily,
   finishCreature,
   listGenes,
   MAX_RENDER_TIMES,
+  MAX_VIEWS,
   renderCreature,
   type Finished,
   type ToolOutput,
+  VIEWS,
 } from "./tools.js";
 
 export const DEFAULT_MODEL = "claude-opus-5-5";
@@ -85,17 +88,28 @@ export async function designCreature(options: DesignOptions): Promise<DesignResu
       name: "render_creature",
       description:
         "Draw a creature as the viewer sees it, at one or more moments, and return the pictures. " +
-        "Time 0 is the rest pose; creatures that read `time` move between moments.",
+        "Time 0 is the rest pose; creatures that read `time` move between moments. It can " +
+        "also draw a variant, and the creature from several sides.",
       inputSchema: z.object({
         source,
+        variant: z
+          .string()
+          .optional()
+          .describe("A variant's name, to draw it instead of the creature's own genes."),
+        views: z
+          .array(z.enum(Object.keys(VIEWS) as [string, ...string[]]))
+          .max(MAX_VIEWS)
+          .optional()
+          .describe("Where to see it from, drawn side by side in each picture. Default: front."),
         times: z
           .array(z.number().min(0))
           .max(MAX_RENDER_TIMES)
           .describe(`Values of \`time\` in seconds, at most ${MAX_RENDER_TIMES}. Default [0].`),
       }),
-      run: ({ source, times }) => {
-        progress({ kind: "tool", name: "render", detail: `time ${times.join(", ") || "0"}` });
-        return toContent(renderCreature(source, times));
+      run: ({ source, times, variant, views }) => {
+        const who = variant === undefined ? "" : `${variant}, `;
+        progress({ kind: "tool", name: "render", detail: `${who}time ${times.join(", ") || "0"}` });
+        return toContent(renderCreature(source, times, undefined, { variant, views }));
       },
     }),
     betaZodTool({
@@ -105,6 +119,21 @@ export async function designCreature(options: DesignOptions): Promise<DesignResu
       run: ({ source }) => {
         progress({ kind: "tool", name: "genes", detail: "" });
         return listGenes(source);
+      },
+    }),
+    betaZodTool({
+      name: "check_family",
+      description:
+        "Check that a creature and its variants morph into each other smoothly (nothing pops " +
+        "in or out, jumps or changes colour suddenly), are about the same size, breed and dance " +
+        "well. Use it on every creature with variants. Returns a report of what passed and " +
+        "what failed.",
+      inputSchema: z.object({ source }),
+      run: async ({ source }) => {
+        const report = await checkFamily(source);
+        const failed = /^\s*FAIL /m.test(report);
+        progress({ kind: "tool", name: "family", detail: failed ? "something failed" : "passed" });
+        return report;
       },
     }),
     betaZodTool({
