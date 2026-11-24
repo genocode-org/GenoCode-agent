@@ -19,24 +19,25 @@ version of the language that it checks against. It uses Claude Opus 5.5 by defau
 
 ## Using it with a Claude plan, without an API key
 
-The agent's tools also come as an MCP server, so Claude Code or Claude Desktop can be the agent and
-your Claude plan covers the work. No API key is needed.
+The agent's tools also come as an MCP server, so Claude Code or Claude Desktop can design creatures
+and your Claude plan covers the work. No API key is needed. Claude learns the language and the rules
+for making creatures from the
+[`genocode-creatures` skill](.claude/skills/genocode-creatures/SKILL.md) in this repository. The
+server gives it tools to check, draw, list the genes of and save a creature.
 
 ```
 npm install
 npm run build
 ```
 
-- **Claude Code:** open this folder. It finds the server in `.mcp.json` and the `design-creature`
-  skill in `.claude/skills`. Ask it to design a creature, for example "design a red ball with two
-  wobbling antennae". Saved creatures go into this folder as `<Name>.genie`.
+- **Claude Code:** open this folder. It finds the server in `.mcp.json` and the skill in
+  `.claude/skills`. Ask it to design a
+  creature, for example "design a red ball with two wobbling antennae". Saved creatures go into this
+  folder as `<Name>.genie`.
 - **Claude Desktop, or Claude Code in another folder:** add a server that runs
-  `node <this folder>/packages/agent/dist/mcp-cli.js --out <folder for creatures>`. In Claude
-  Desktop, the `design_creature` prompt starts a design from a description.
-
-The server has the agent's four tools (`check_creature`, `render_creature`, `list_genes` and
-`save_creature`) and `design_guide`, which gives Claude the agent's instructions, the language
-definition and the starter creatures.
+  `node <this folder>/packages/agent/dist/mcp-cli.js --out <folder for creatures>`, and add the
+  skill: copy `.claude/skills/genocode-creatures` to `~/.claude/skills`, or upload it as a zip in
+  Claude Desktop. The `design_creature` prompt then starts a design from a description.
 
 ## Development
 

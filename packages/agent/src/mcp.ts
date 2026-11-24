@@ -1,12 +1,12 @@
 // The agent's tools as an MCP server, so an app that already runs Claude (Claude Code, Claude
-// Desktop) can design creatures with them. The app is then the agent loop and its Claude plan pays
-// for the work, so no API key is needed. Saving writes `<Name>.genie` into a folder.
+// Desktop) can design creatures with them, following the genocode-creatures skill. The app is then
+// the agent loop and its Claude plan pays for the work, so no API key is needed. Saving writes
+// `<Name>.genie` into a folder.
 
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { systemPrompt } from "./prompt.js";
 import {
   checkCreature,
   finishCreature,
@@ -34,25 +34,9 @@ function toMcpContent(outputs: readonly ToolOutput[]): Content[] {
 
 const text = (t: string) => ({ content: [{ type: "text" as const, text: t }] });
 
-/** The whole guide: how to work, then the language definition and the starter creatures. */
-function guide(): string {
-  const prompt = systemPrompt();
-  return `${prompt.instructions}\n\n${prompt.reference}`;
-}
-
 export function createServer(options: ServerOptions): McpServer {
   const server = new McpServer({ name: "genocode", version: "0.0.0" });
   const source = z.string().describe("The whole .genie file, starting with `creature <Name>`.");
-
-  server.registerTool(
-    "design_guide",
-    {
-      description:
-        "How to design a GenoCode creature with these tools, the GenoCode language definition and " +
-        "the starter creatures. Read it before writing a creature.",
-    },
-    () => text(guide()),
-  );
 
   server.registerTool(
     "check_creature",
@@ -124,7 +108,12 @@ export function createServer(options: ServerOptions): McpServer {
       messages: [
         {
           role: "user",
-          content: { type: "text", text: `${guide()}\n\nDesign this creature: ${description}` },
+          content: {
+            type: "text",
+            text:
+              "Follow the genocode-creatures skill, and use this server's tools to check, draw " +
+              `and save the creature. Design this creature: ${description}`,
+          },
         },
       ],
     }),

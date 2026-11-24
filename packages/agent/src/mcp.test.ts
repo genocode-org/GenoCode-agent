@@ -32,18 +32,14 @@ const call = async (name: string, args: Record<string, unknown> = {}) =>
   }[];
 
 describe("MCP server", () => {
-  it("offers the guide and the four tools", async () => {
+  it("offers the four tools", async () => {
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name)).toEqual([
-      "design_guide",
       "check_creature",
       "render_creature",
       "list_genes",
       "save_creature",
     ]);
-    const [guide] = await call("design_guide");
-    expect(guide!.text).toContain("You design creatures in GenoCode");
-    expect(guide!.text).toContain("# The GenoCode language");
   });
 
   it("checks, draws and lists genes", async () => {
@@ -67,13 +63,13 @@ describe("MCP server", () => {
     expect(refused!.text).toContain("Not saved");
   });
 
-  it("has a prompt that asks for a creature with the guide", async () => {
+  it("has a prompt that asks for a creature with the skill", async () => {
     const { messages } = await client.getPrompt({
       name: "design_creature",
       arguments: { description: "a blob" },
     });
     const content = messages[0]!.content as { text: string };
-    expect(content.text).toContain("# The GenoCode language");
+    expect(content.text).toContain("genocode-creatures skill");
     expect(content.text).toMatch(/Design this creature: a blob$/);
   });
 });

@@ -1,0 +1,133 @@
+creature Starter
+// A template to start from: a round body with a ring of eight arms. How many arms show is a
+// number, not a count: an arm that isn't shown has shrunk to nothing, so it grows back smoothly
+// while the creature morphs. The arms wave with the middle of the music, the body swells with the
+// bass, and with no music playing it dances by itself, to its own slow beat.
+// The creature and its variants morph smoothly into one another: they all lay the same shapes.
+
+// --- Body ---
+
+gene size = 1 in 0.5..2 log // how big the whole creature is
+gene body = (1, 1, 1) in (0.6, 0.6, 0.6)..(1.6, 1.6, 1.6) // how the body is stretched: across, up and front to back
+gene skin = hsv(200, 0.6, 0.9) in hsv(150, 0.2, 0.4)..hsv(260, 1, 1) // the body's colour
+
+// --- Arms ---
+
+gene arms = 6 in 0..8 // how many of the eight arms have grown; part of one is an arm growing in
+gene reach = 1 in 0.4..2 log // how long the arms are
+gene curl = 12 in -30..30 // how much each arm curls along its length
+gene tip = hsv(320, 0.8, 1) in hsv(260, 0.3, 0.5)..hsv(360, 1, 1) // the colour at the arms' tips
+
+// --- Dancing ---
+
+gene swell = 0.15 in 0..0.4 // how much the body swells with the bass
+gene wave_by = 25 in 0..60 // how far the arms wave with the music
+gene idle = 0.5 in 0..1 // how much it dances by itself when no music plays
+gene idle_tempo = 0.6 in 0.2..1.5 // its own beats a second, when it dances by itself
+
+// --- How the music moves it ---
+
+let own_beat = frac(time * idle_tempo)
+let listening = clamp(music.level * 4, 0, 1)
+let swing = groove(wave(own_beat), wave(beat) * (0.4 + 0.6 * music.mid))
+let pump = groove(0.5 * bump(own_beat), music.bass)
+
+// The order the arms grow in, so a part-grown ring is spread evenly round the body.
+let order = [0, 4, 2, 6, 1, 5, 3, 7]
+
+// The beat it dances to: the music's when there is some, its own when there isn't. Blending the
+// two by how loud the music is lets it slip from one to the other without a jerk.
+function groove(by_itself, to_music) {
+  return mix(idle * by_itself, to_music, listening)
+}
+
+// A size that has shrunk to nothing is kept a millionth above zero, so every shape stays in place
+// but is far too small to see.
+function shown(amount) {
+  return max(amount, 0.000001)
+}
+
+// --- The creature ---
+
+grow size
+// The camera looks at the middle of the body; the creature is about the same size in every
+// variant, so the dance camera frames them all.
+focuspoint
+
+shape ball
+colour skin
+lay { grow body * (1 + swell * pump) }
+
+for i from 0 to 7 {
+  // How much of this arm has grown: 1 when it's fully out, 0 when it's gone.
+  let grown = clamp(arms - order[i], 0, 1)
+  branch {
+    roll i * 45
+    pitch -90
+    forward body.y * 0.45
+    arm(shown(grown), i)
+  }
+}
+
+part arm(grown, i) {
+  gene pieces = 6 in 3..10 step 1 // how many pieces make up each arm
+  gene thin = 0.8 in 0.6..0.95 // each piece's size compared with the one before
+
+  grow 0.35 * grown
+  shape cone
+  for k from 1 to pieces {
+    let along = k / pieces
+    colour mix(skin, tip, along)
+    pitch curl / pieces * 6 + wave_by * swing * along * sin(i * 45 + 90)
+    lay { grow (1, 1, 2 * reach) }
+    forward reach
+    grow thin
+  }
+}
+
+// --- Its dance ---
+
+dance {
+  gene drive = 0.8 in 0.2..2.5 // how fast the music moves it from variant to variant, in variants a second
+
+  morph follows music.mid speed drive settle 3
+  zoom follows music.bass_hit amount 0.3 settle 4
+  spin follows music.level from 20 to 150 smooth 1
+  turn on music.mid changes by 0.6
+  reverse on music.bass drops by 0.5 on 8 off 8
+}
+
+// --- The family ---
+
+// A small round bud with only two short arms out.
+variant Bud {
+  size = 1.5
+  arms = 2
+  reach = 0.6
+  curl = 25
+  skin = hsv(160, 0.5, 0.7)
+  tip = hsv(280, 0.4, 0.8)
+}
+
+// A long-armed star, arms straight out, in deep blue and gold.
+variant Star {
+  size = 0.7
+  arms = 8
+  reach = 1.5
+  curl = -5
+  body = (1.2, 0.7, 1.2)
+  skin = hsv(240, 0.9, 0.6)
+  tip = hsv(355, 0.3, 1)
+  arm.thin = 0.9
+}
+
+// A tall egg with curling arms that wave hard.
+variant Curler {
+  arms = 5
+  reach = 1.1
+  curl = -28
+  body = (0.8, 1.5, 0.8)
+  wave_by = 50
+  skin = hsv(190, 1, 1)
+  tip = hsv(300, 1, 1)
+}
