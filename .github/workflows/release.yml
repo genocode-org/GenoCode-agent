@@ -1,0 +1,62 @@
+name: Release
+
+# When a version tag (such as v0.1.0) is pushed, publishes @genocode/agent to npm, unless that
+# version is already on npm, and makes a GitHub release with the Claude Desktop extension
+# (genocode.mcpb) and the skill (genocode-creatures.zip) attached. Releases are staged: each one waits for approval on npmjs.com (or
+# `npm stage approve`) before it goes live. Uses npm trusted publishing, so no npm token is stored
+# in the repository: the package lists this workflow as a trusted publisher in its settings on
+# npmjs.com.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      # `npm stage` needs npm 12; Node's own npm is older.
+      - run: npm install -g npm@12.1.0
+      - run: npm ci
+      - run: npm run check
+      - run: |
+          version=$(node -p "require('./packages/agent/package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "The tag $GITHUB_REF_NAME doesn't match the package version $version"
+            exit 1
+          fi
+          if npm view "@genocode/agent@$version" version > /dev/null 2>&1; then
+            echo "@genocode/agent@$version is already on npm"
+          else
+            npm stage publish -w @genocode/agent
+          fi
+
+  files:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/release-files.mjs
+      - run: >
+          gh release create "$GITHUB_REF_NAME" release/genocode.mcpb release/genocode-creatures.zip
+          --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

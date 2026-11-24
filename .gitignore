@@ -13,3 +13,10 @@ coverage/
 
 # Local secrets
 ANTHROPIC_API_KEY.txt
+
+# Copied into the package when it is packed (packages/agent/scripts/copy-skill.mjs).
+packages/agent/skill/
+packages/agent/LICENSE
+
+# Built by scripts/release-files.mjs.
+release/

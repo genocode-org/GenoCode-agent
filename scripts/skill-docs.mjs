@@ -8,7 +8,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const DOCS = ["GETTING_STARTED.md", "LANGUAGE.md", "REFERENCE.md"];
 const FROM = "https://raw.githubusercontent.com/genocode-org/GenoCode/main/docs/";
-const TO = new URL("../.claude/skills/genocode-creatures/docs/", import.meta.url);
+const TO = new URL("../plugin/skills/genocode-creatures/docs/", import.meta.url);
 
 const checkOnly = process.argv.includes("--check");
 let behind = 0;

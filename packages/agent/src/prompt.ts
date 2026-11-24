@@ -3,9 +3,7 @@
 // It's the same for every request, so it can be cached.
 
 import { readdirSync, readFileSync } from "node:fs";
-
-/** The skill folder, found from src/ and from dist/ alike. */
-const SKILL = new URL("../../../.claude/skills/genocode-creatures/", import.meta.url);
+import { SKILL } from "./skill.js";
 
 const INSTRUCTIONS = `You design GenoCode creatures for the user. Follow the genocode-creatures skill below. All its \
 files are included, so you don't need to read them.

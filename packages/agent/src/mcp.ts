@@ -3,7 +3,7 @@
 // the agent loop and its Claude plan pays for the work, so no API key is needed. Saving writes
 // `<Name>.genie` into a folder.
 
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
@@ -37,8 +37,13 @@ function toMcpContent(outputs: readonly ToolOutput[]): Content[] {
 
 const text = (t: string) => ({ content: [{ type: "text" as const, text: t }] });
 
+/** This package's version, which the server reports. */
+const VERSION: string = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version;
+
 export function createServer(options: ServerOptions): McpServer {
-  const server = new McpServer({ name: "genocode", version: "0.0.0" });
+  const server = new McpServer({ name: "genocode", version: VERSION });
   const source = z.string().describe("The whole .genie file, starting with `creature <Name>`.");
 
   server.registerTool(

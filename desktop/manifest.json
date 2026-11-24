@@ -1,0 +1,66 @@
+{
+  "manifest_version": "0.3",
+  "name": "genocode",
+  "display_name": "GenoCode",
+  "version": "0.1.0",
+  "description": "Design GenoCode creatures: tools to check, draw and save them.",
+  "long_description": "Describe a creature, and Claude writes it in GenoCode, checks it, draws it, fixes what's wrong and saves it as a .genie file. Add the genocode-creatures skill too, so Claude knows the language and the rules for making creatures. Open saved creatures in the GenoCode app: https://genocode.piorek.co.za/app/",
+  "author": {
+    "name": "GenoCode",
+    "url": "https://github.com/genocode-org"
+  },
+  "homepage": "https://github.com/genocode-org/GenoCode-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/genocode-org/GenoCode-agent"
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "keywords": ["genocode", "creatures", "generative art"],
+  "server": {
+    "type": "node",
+    "entry_point": "node_modules/@genocode/agent/dist/mcp-cli.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/node_modules/@genocode/agent/dist/mcp-cli.js",
+        "--out",
+        "${user_config.creatures_folder}"
+      ]
+    }
+  },
+  "tools": [
+    { "name": "check_creature", "description": "Check a creature for errors and warnings." },
+    {
+      "name": "render_creature",
+      "description": "Draw a creature, a variant or several sides of it."
+    },
+    { "name": "list_genes", "description": "List the genes the user can change." },
+    {
+      "name": "check_family",
+      "description": "Check that a creature and its variants morph, breed and dance smoothly."
+    },
+    { "name": "save_creature", "description": "Save the finished creature as a .genie file." }
+  ],
+  "prompts": [
+    {
+      "name": "design_creature",
+      "description": "Design a GenoCode creature from a description.",
+      "arguments": ["description"],
+      "text": "Follow the genocode-creatures skill, and use the GenoCode tools to check, draw and save the creature. Design this creature: ${arguments.description}"
+    }
+  ],
+  "user_config": {
+    "creatures_folder": {
+      "type": "directory",
+      "title": "Folder for creatures",
+      "description": "Where saved creatures go, as .genie files.",
+      "required": true,
+      "default": ["${DOCUMENTS}/GenoCode"]
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=22.0.0" }
+  }
+}

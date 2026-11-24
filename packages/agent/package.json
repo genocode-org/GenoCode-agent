@@ -1,24 +1,48 @@
 {
   "name": "@genocode/agent",
-  "version": "0.0.0",
-  "private": true,
-  "description": "An AI agent that designs GenoCode creatures from a description, with Claude.",
+  "version": "0.1.0",
+  "description": "Design GenoCode creatures with Claude: an MCP server with tools to check, draw and save creatures, the genocode-creatures skill, and an agent for the Claude API.",
+  "keywords": [
+    "genocode",
+    "creatures",
+    "generative art",
+    "mcp",
+    "claude",
+    "agent"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/genocode-org/GenoCode-agent.git",
+    "directory": "packages/agent"
+  },
+  "homepage": "https://github.com/genocode-org/GenoCode-agent#readme",
+  "bugs": "https://github.com/genocode-org/GenoCode-agent/issues",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "genocode-mcp": "./dist/mcp-cli.js"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "bin": {
+    "genocode-mcp": "./dist/mcp-cli.js"
+  },
   "files": [
-    "dist"
+    "dist",
+    "skill",
+    "README.md",
+    "LICENSE"
   ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepack": "node scripts/copy-skill.mjs",
+    "postpack": "node scripts/remove-skill.mjs"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
     "@genocode/core": "0.11.10",

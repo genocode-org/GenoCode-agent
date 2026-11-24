@@ -5,52 +5,76 @@
 An AI agent that designs [GenoCode](https://github.com/genocode-org/GenoCode) creatures from a
 description, with Claude.
 
-**Status: ready to use with a Claude plan.** You can design creatures with it today in Claude Code
-or Claude Desktop, with no API key: see
-[Using it with a Claude plan](#using-it-with-a-claude-plan-without-an-api-key). It isn't published
-on npm yet. When it is, it will be `@genocode/agent`, and `genie create` will return to
-[GenoCode-cli](https://github.com/genocode-org/GenoCode-cli).
+Describe a creature, and Claude writes it in GenoCode, checks it, draws it, fixes what's wrong and
+saves it as a `.genie` file. Open it in the [GenoCode app](https://genocode.piorek.co.za/app/) to
+watch it move, morph, breed and dance.
 
-## How it works
+With Claude Code or Claude Desktop, your Claude plan covers the work, so no API key is needed.
 
-Given a description, the agent writes a `.genie` creature, checks it, draws it at a few moments to
-see how it looks and moves, fixes what's wrong and saves it. Its system prompt is the
-[`genocode-creatures` skill](.claude/skills/genocode-creatures/SKILL.md): the rules for making
-creatures, the language docs and the sample creatures. If the description doesn't say how many
-variants the creature should have, the agent asks instead of saving one. It uses Claude Opus 5.5 by
-default.
+## Claude Code
 
-## Using it with a Claude plan, without an API key
-
-The agent's tools also come as an MCP server, so Claude Code or Claude Desktop can design creatures
-and your Claude plan covers the work. No API key is needed. Claude learns the language and the rules
-for making creatures from the
-[`genocode-creatures` skill](.claude/skills/genocode-creatures/SKILL.md) in this repository. The
-server gives it tools to check, draw, list the genes of and save a creature.
+Add the GenoCode plugin, in Claude Code:
 
 ```
-npm install
-npm run build
+/plugin marketplace add genocode-org/GenoCode-agent
+/plugin install genocode@genocode
 ```
 
-- **Claude Code:** open this folder. It finds the server in `.mcp.json` and the skill in
-  `.claude/skills`. Ask it to design a
-  creature, for example "design a red ball with two wobbling antennae". Saved creatures go into this
-  folder as `<Name>.genie`.
-- **Claude Desktop, or Claude Code in another folder:** add a server that runs
-  `node <this folder>/packages/agent/dist/mcp-cli.js --out <folder for creatures>`, and add the
-  skill: copy `.claude/skills/genocode-creatures` to `~/.claude/skills`, or upload it as a zip in
-  Claude Desktop. The `design_creature` prompt then starts a design from a description.
+Then, in any folder, ask Claude to design a creature, for example "design a red ball with two
+wobbling antennae". It saves the creature in that folder. You need
+[Node.js](https://nodejs.org) 22 or later.
+
+## Claude Desktop
+
+1. Download `genocode.mcpb` from the
+   [latest release](https://github.com/genocode-org/GenoCode-agent/releases/latest) and open it.
+   Claude Desktop asks you to install the GenoCode extension, and which folder to save creatures
+   in.
+2. Download `genocode-creatures.zip` from the same release, and upload it in Claude Desktop's
+   settings, under skills. The skill teaches Claude the language and the rules for making
+   creatures.
+3. Ask Claude to design a creature.
+
+## Other ways
+
+- **Any app that runs MCP servers:** run `npx -y @genocode/agent`. Saved creatures go into the
+  folder it's started in, or the folder given with `--out <folder>`. Give the app the skill from
+  `genocode-creatures.zip` too, if it takes skills.
+- **Your own program, with the Claude API:** `designCreature({ description })` from
+  [`@genocode/agent`](https://www.npmjs.com/package/@genocode/agent) designs a creature on its own
+  and returns it. It needs Claude API credentials: set `ANTHROPIC_API_KEY`, or run
+  `ant auth login` once. It uses Claude Opus 5.5 by default.
+
+## What's inside
+
+- [`plugin/skills/genocode-creatures`](plugin/skills/genocode-creatures/SKILL.md): the skill. It
+  holds the rules for making creatures, the language docs and sample creatures.
+- [`packages/agent`](packages/agent): `@genocode/agent`. It's the MCP server, with tools to check,
+  draw (a variant, or from several sides), list the genes of, family-check and save a creature, and
+  `designCreature` for the Claude API, whose system prompt is the whole skill.
+- [`plugin`](plugin): the Claude Code plugin, listed by
+  [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
+- [`desktop`](desktop): the Claude Desktop extension's manifest.
 
 ## Development
 
-You need Node.js 22 or later (see `.nvmrc`) and Claude API credentials: set `ANTHROPIC_API_KEY`,
-or run `ant auth login` once. The tests don't call the API.
+You need Node.js 22 or later (see `.nvmrc`). The tests don't call the Claude API.
 
 ```
 npm install
 npm run check     # build, type-check, test and check formatting, as CI does
 ```
+
+Claude Code opened in this folder uses the server you built, from `.mcp.json`, and the skill, from
+`.claude/skills`. That's a link to `plugin/skills`, so you're trying out the version you're working
+on.
+
+To release, put the new version in `packages/agent/package.json`,
+`plugin/.claude-plugin/plugin.json` (twice: `version`, and the server's `@genocode/agent@…`) and
+`desktop/manifest.json`, then push a tag such as `v0.2.0`. The release workflow publishes the
+package to npm, where it waits for approval, and makes a GitHub release with `genocode.mcpb` and
+`genocode-creatures.zip`. `node scripts/release-files.mjs` builds those two files locally, after
+`npm run build`.
 
 The skill's `docs/` are copies of [GenoCode's docs](https://github.com/genocode-org/GenoCode/tree/main/docs).
 `npm run skill-docs` copies them again after GenoCode's docs change. A workflow checks every Monday
