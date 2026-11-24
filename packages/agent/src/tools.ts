@@ -24,6 +24,7 @@ import {
 } from "@genocode/core";
 import { rasterize, type View } from "@genocode/render";
 import { encodePng } from "./png.js";
+import { SKILL } from "./skill.js";
 
 /** One line per diagnostic, `file:line:column: severity: message`. */
 export function describeDiagnostics(
@@ -228,10 +229,8 @@ export function finishCreature(source: string): { finished: Finished } | { probl
   };
 }
 
-/** The skill's family check, found from src/ and from dist/ alike. */
-const FAMILY_CHECK = fileURLToPath(
-  new URL("../../../.claude/skills/genocode-creatures/tools/familycheck.mjs", import.meta.url),
-);
+/** The skill's family check. */
+const FAMILY_CHECK = fileURLToPath(new URL("tools/familycheck.mjs", SKILL));
 
 /**
  * Runs the skill's family check on a creature: whether it and its variants morph into each other

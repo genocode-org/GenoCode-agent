@@ -1,0 +1,15 @@
+{
+  "name": "genocode",
+  "description": "GenoCode: code, breed and dance creatures.",
+  "owner": {
+    "name": "GenoCode",
+    "url": "https://github.com/genocode-org"
+  },
+  "plugins": [
+    {
+      "name": "genocode",
+      "source": "./plugin",
+      "description": "Design GenoCode creatures: the genocode-creatures skill, and tools to check, draw and save creatures."
+    }
+  ]
+}

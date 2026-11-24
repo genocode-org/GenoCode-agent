@@ -1,0 +1,20 @@
+{
+  "name": "genocode",
+  "displayName": "GenoCode",
+  "version": "0.1.0",
+  "description": "Design GenoCode creatures: the genocode-creatures skill, and tools to check, draw and save creatures. No API key needed.",
+  "author": {
+    "name": "GenoCode",
+    "url": "https://github.com/genocode-org"
+  },
+  "homepage": "https://github.com/genocode-org/GenoCode-agent",
+  "repository": "https://github.com/genocode-org/GenoCode-agent",
+  "license": "MIT",
+  "keywords": ["genocode", "creatures", "generative art"],
+  "mcpServers": {
+    "genocode": {
+      "command": "npx",
+      "args": ["-y", "@genocode/agent@0.1.0"]
+    }
+  }
+}
