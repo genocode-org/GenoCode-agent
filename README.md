@@ -5,8 +5,10 @@
 An AI agent that designs [GenoCode](https://github.com/genocode-org/GenoCode) creatures from a
 description, with Claude.
 
-**Status: on hold.** The agent works, but it isn't being developed or published for now. When it is
-picked up again, it will be published as `@genocode/agent` and `genie create` will return to
+**Status: ready to use with a Claude plan.** You can design creatures with it today in Claude Code
+or Claude Desktop, with no API key: see
+[Using it with a Claude plan](#using-it-with-a-claude-plan-without-an-api-key). It isn't published
+on npm yet. When it is, it will be `@genocode/agent`, and `genie create` will return to
 [GenoCode-cli](https://github.com/genocode-org/GenoCode-cli).
 
 ## How it works
@@ -49,6 +51,10 @@ or run `ant auth login` once. The tests don't call the API.
 npm install
 npm run check     # build, type-check, test and check formatting, as CI does
 ```
+
+The skill's `docs/` are copies of [GenoCode's docs](https://github.com/genocode-org/GenoCode/tree/main/docs).
+`npm run skill-docs` copies them again after GenoCode's docs change. A workflow checks every Monday
+that they're the same, and fails if they aren't.
 
 ## License
 

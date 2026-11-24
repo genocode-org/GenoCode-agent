@@ -18,7 +18,9 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run build && npm run typecheck && npm run test && npm run format:check"
+    "check": "npm run build && npm run typecheck && npm run test && npm run format:check",
+    "skill-docs": "node scripts/skill-docs.mjs",
+    "skill-docs:check": "node scripts/skill-docs.mjs --check"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

@@ -27,6 +27,7 @@ An AI agent that designs GenoCode creatures from a description, with Claude. It 
   with no jargon the user has not met and no "as in the original".
 - **Nothing from DancerDNA,** and nothing that refers to files outside this repository.
 - **The `genocode-creatures` skill** lives in `.claude/skills/genocode-creatures`. Only its
-  author adds rules to it. Its `docs/` are copies of GenoCode's docs and must match them.
+  author adds rules to it. Its `docs/` are copies of GenoCode's docs and must match them:
+  `npm run skill-docs` copies them from GitHub, and `npm run skill-docs:check` compares them.
 - The language itself is defined in GenoCode's
   [docs/LANGUAGE.md](https://github.com/genocode-org/GenoCode/blob/main/docs/LANGUAGE.md).
