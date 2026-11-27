@@ -1,7 +1,7 @@
 {
   "name": "genocode",
   "displayName": "GenoCode",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "Learn GenoCode and design creatures: the genocode-tutor and genocode-creatures skills, and tools to check, draw and save creatures. No API key needed.",
   "icon": "./.claude-plugin/icon.png",
   "author": {
