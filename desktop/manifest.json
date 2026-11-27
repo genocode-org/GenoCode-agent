@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "genocode",
   "display_name": "GenoCode",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Design GenoCode creatures: tools to check, draw and save them.",
   "long_description": "Describe a creature, and Claude writes it in GenoCode, checks it, draws it, fixes what's wrong and saves it as a .genie file. Add the genocode-creatures skill too, so Claude knows the language and the rules for making creatures. Open saved creatures in the GenoCode app: https://genocode.piorek.co.za/app/",
   "author": {
