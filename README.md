@@ -28,6 +28,8 @@ later. Check your Node.js version with `node --version`.
 4. Ask for a creature, for example "design a red ball with two wobbling antennae". Claude may ask
    you a question first, such as how many variants you want. It saves the creature as a `.genie`
    file in the folder you started Claude Code in.
+5. To learn to write creatures yourself, ask "teach me GenoCode". Claude teaches you lesson by
+   lesson, and checks and explains the creatures you write.
 
 To get a newer version later, run `/plugin marketplace update genocode`, then restart Claude Code.
 
