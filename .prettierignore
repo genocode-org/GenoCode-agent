@@ -5,3 +5,6 @@ package-lock.json
 # The genocode-creatures skill keeps its own layout, and its docs are copies of GenoCode's.
 plugin/skills/genocode-creatures
 release
+# The genocode-tutor skill too: its layout is its author's, its docs are GenoCode's and its examples
+# are genocode-creatures'.
+plugin/skills/genocode-tutor
