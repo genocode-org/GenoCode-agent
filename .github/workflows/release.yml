@@ -2,7 +2,7 @@ name: Release
 
 # When a version tag (such as v0.1.0) is pushed, publishes @genocode/agent to npm, unless that
 # version is already on npm, and makes a GitHub release with the Claude Desktop extension
-# (genocode.mcpb) and the skill (genocode-creatures.zip) attached. Releases are staged: each one waits for approval on npmjs.com (or
+# (genocode.mcpb) and the skills (genocode-creatures.zip, genocode-tutor.zip) attached. Releases are staged: each one waits for approval on npmjs.com (or
 # `npm stage approve`) before it goes live. Uses npm trusted publishing, so no npm token is stored
 # in the repository: the package lists this workflow as a trusted publisher in its settings on
 # npmjs.com.
@@ -57,6 +57,7 @@ jobs:
       - run: node scripts/release-files.mjs
       - run: >
           gh release create "$GITHUB_REF_NAME" release/genocode.mcpb release/genocode-creatures.zip
+          release/genocode-tutor.zip
           --title "$GITHUB_REF_NAME" --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}

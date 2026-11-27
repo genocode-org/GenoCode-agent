@@ -36,7 +36,7 @@ To get a newer version later, run `/plugin marketplace update genocode`, then re
 You need [Claude Desktop](https://claude.com/download) for Windows or Mac. It comes with what the
 extension needs, so you don't have to install Node.js.
 
-1. Download `genocode.mcpb` and `genocode-creatures.zip` from the
+1. Download `genocode.mcpb`, `genocode-creatures.zip` and `genocode-tutor.zip` from the
    [latest release](https://github.com/genocode-org/GenoCode-agent/releases/latest).
 2. Open `genocode.mcpb` (double-click it, or drag it into Claude Desktop). Claude Desktop shows the
    GenoCode extension: click **Install**. It asks which folder to save creatures in. If you leave
@@ -44,9 +44,11 @@ extension needs, so you don't have to install Node.js.
 3. Add the skill, which teaches Claude the language and the rules for making creatures: in Claude
    Desktop's settings, find **Skills** (under Capabilities), choose to upload a skill, and pick
    `genocode-creatures.zip`. Leave the zip as it is; don't unzip it.
-4. Start a new chat and ask for a creature.
+4. If you want Claude to teach you to write creatures yourself, upload `genocode-tutor.zip` the
+   same way.
+5. Start a new chat and ask for a creature, or ask to learn GenoCode.
 
-To get a newer version later, download both files from the latest release again and install them
+To get a newer version later, download the files from the latest release again and install them
 the same way.
 
 ## Open your creature
@@ -59,7 +61,7 @@ it move, change its genes, breed it and make it dance.
 
 - **Any app that runs MCP servers:** run `npx -y @genocode/agent`. Saved creatures go into the
   folder it's started in, or the folder given with `--out <folder>`. Give the app the skill from
-  `genocode-creatures.zip` too, if it takes skills.
+  `genocode-creatures.zip` too, if it takes skills, and `genocode-tutor.zip` for lessons.
 - **Your own program, with the Claude API:** `designCreature({ description })` from
   [`@genocode/agent`](https://www.npmjs.com/package/@genocode/agent) designs a creature on its own
   and returns it. It needs Claude API credentials: set `ANTHROPIC_API_KEY`, or run
@@ -93,8 +95,8 @@ To release, put the new version in `packages/agent/package.json`,
 `plugin/.claude-plugin/plugin.json` (twice: `version`, and the server's `@genocode/agent@…`) and
 `desktop/manifest.json` in a pull request. Once it's merged, push a tag such as `v0.2.0` on `main`.
 The release workflow stages the package on npm, where it waits until you approve it on
-npmjs.com, and makes a GitHub release with `genocode.mcpb` and
-`genocode-creatures.zip`. `node scripts/release-files.mjs` builds those two files locally, after
+npmjs.com, and makes a GitHub release with `genocode.mcpb`, `genocode-creatures.zip` and
+`genocode-tutor.zip`. `node scripts/release-files.mjs` builds those files locally, after
 `npm run build`.
 
 The skill's `docs/` are copies of [GenoCode's docs](https://github.com/genocode-org/GenoCode/tree/main/docs).
