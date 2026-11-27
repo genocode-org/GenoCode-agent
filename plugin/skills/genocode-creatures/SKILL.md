@@ -1,6 +1,6 @@
 ---
 name: genocode-creatures
-description: Design and write GenoCode creatures (.genie files). Use when asked to create, improve, fix or add variants to a GenoCode creature, or to write .genie code.
+description: Design and write GenoCode creatures (.genie files). Use when asked to create, improve, fix or add variants to a GenoCode creature, or to write .genie code. Not for teaching someone to write GenoCode themselves; that is genocode-tutor.
 ---
 
 # Making GenoCode creatures
