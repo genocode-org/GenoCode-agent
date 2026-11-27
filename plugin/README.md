@@ -34,7 +34,7 @@ Then restart Claude Code and type `/mcp` to check that `genocode` is in the list
 
 ## What it runs
 
-- The MCP server runs on your computer with `npx -y @genocode/agent@0.2.0`, from
+- The MCP server runs on your computer with `npx -y @genocode/agent@0.2.1`, from
   [npm](https://www.npmjs.com/package/@genocode/agent). Its source is in this repository under
   `packages/agent`. It needs [Node.js](https://nodejs.org) 22 or later.
 - The server makes no network requests and collects no data. It writes only the `.genie` files you
